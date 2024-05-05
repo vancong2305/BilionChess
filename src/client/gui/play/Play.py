@@ -22,7 +22,7 @@ character_one = Body(1)
 character_two = Body(2)
 
 # Tải hình ảnh nền
-background_image = pygame.image.load("../../img/map/background.png")
+background_image = pygame.image.load("./map/background.png")
 background_image = pygame.transform.scale(background_image, (Para.WIDTH, Para.HEIGHT))
 
 # Tạo màn hình
