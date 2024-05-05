@@ -1,19 +1,20 @@
+import os
+
 import pygame
 
 from src.client.gui.parameter.Para import Para
 
 screen = pygame.display.set_mode((Para.WIDTH, Para.HEIGHT))
 
+# Đường dẫn đến ảnh
+grass_paths = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../resource/img/map/gravel.png'))
 
-grass_paths =  "./img/map/gravel.png"
-grass_paths1 =  "./img/map/gravel_1.png"
-grass_paths2 =  "./img/map/gravel_2.png"
-grass_paths3 =  "./img/map/gravel_3.png"
+# Tải ảnh
+grass_paths_image = pygame.image.load(grass_paths)
 
-grass_paths_image = pygame.transform.smoothscale(pygame.image.load(grass_paths), (Para.SIZE, Para.SIZE))
-grass_paths_image1 = pygame.transform.smoothscale(pygame.image.load(grass_paths1), (Para.SIZE, Para.SIZE))
-grass_paths_image2 = pygame.transform.smoothscale(pygame.image.load(grass_paths2), (Para.SIZE, Para.SIZE))
-grass_paths_image3 = pygame.transform.smoothscale(pygame.image.load(grass_paths3), (Para.SIZE, Para.SIZE))
+# Thay đổi kích thước ảnh
+grass_paths_image = pygame.transform.smoothscale(grass_paths_image, (Para.SIZE, Para.SIZE))
+
 class Map:
     numbers = [0, 1, 2, 3, 4, 5, 6, 7]
     numbers1 = [0, 1, 2, 3]

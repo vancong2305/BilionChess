@@ -1,3 +1,5 @@
+import os
+
 import pygame
 from src.client.gui.parameter.Para import Para
 
@@ -17,16 +19,16 @@ class Body:
         if self.character_type == 1:
             if self.action == "idle":
                 image_paths = [
-                    "./img/boy/idle/Idle_000.png",
-                    "./img/boy/idle/Idle_001.png",
-                    "./img/boy/idle/Idle_002.png",
-                    "./img/boy/idle/Idle_003.png",
-                    "./img/boy/idle/Idle_004.png",
-                    "./img/boy/idle/Idle_005.png",
-                    "./img/boy/idle/Idle_006.png",
-                    "./img/boy/idle/Idle_007.png",
-                    "./img/boy/idle/Idle_008.png",
-                    "./img/boy/idle/Idle_009.png"
+                    "../../../resource/img/boy/idle/Idle_000.png",
+                    "../../../resource/img/boy/idle/Idle_001.png",
+                    "../../../resource/img/boy/idle/Idle_002.png",
+                    "../../../resource/img/boy/idle/Idle_003.png",
+                    "../../../resource/img/boy/idle/Idle_004.png",
+                    "../../../resource/img/boy/idle/Idle_005.png",
+                    "../../../resource/img/boy/idle/Idle_006.png",
+                    "../../../resource/img/boy/idle/Idle_007.png",
+                    "../../../resource/img/boy/idle/Idle_008.png",
+                    "../../../resource/img/boy/idle/Idle_009.png"
                 ]
             elif self.action == "walk":
                 image_paths = [
@@ -45,16 +47,16 @@ class Body:
         elif self.character_type == 2:
             if self.action == "idle":
                 image_paths = [
-                    "./img/girl/idle/Idle_000.png",
-                    "./img/girl/idle/Idle_001.png",
-                    "./img/girl/idle/Idle_002.png",
-                    "./img/girl/idle/Idle_003.png",
-                    "./img/girl/idle/Idle_004.png",
-                    "./img/girl/idle/Idle_005.png",
-                    "./img/girl/idle/Idle_006.png",
-                    "./img/girl/idle/Idle_007.png",
-                    "./img/girl/idle/Idle_008.png",
-                    "./img/girl/idle/Idle_009.png"
+                    "../../../resource/img/girl/idle/Idle_000.png",
+                    "../../../resource/img/girl/idle/Idle_001.png",
+                    "../../../resource/img/girl/idle/Idle_002.png",
+                    "../../../resource/img/girl/idle/Idle_003.png",
+                    "../../../resource/img/girl/idle/Idle_004.png",
+                    "../../../resource/img/girl/idle/Idle_005.png",
+                    "../../../resource/img/girl/idle/Idle_006.png",
+                    "../../../resource/img/girl/idle/Idle_007.png",
+                    "../../../resource/img/girl/idle/Idle_008.png",
+                    "../../../resource/img/girl/idle/Idle_009.png"
                 ]
             elif self.action == "walk":
                 image_paths = [
@@ -75,7 +77,9 @@ class Body:
 
         images = []
         for path in image_paths:
-            image = pygame.image.load(path)
+            print(os.path.dirname(__file__))
+            image_path = os.path.abspath(os.path.join(os.path.dirname(__file__), path))  # Sửa đường dẫn ở đây
+            image = pygame.image.load(image_path)
             resized_image = pygame.transform.smoothscale(image, (Para.SIZE // 3, Para.SIZE // 2))
             images.append(resized_image)
         return images

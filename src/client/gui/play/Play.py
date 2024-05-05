@@ -1,3 +1,5 @@
+import os
+
 import pygame
 from pygame.locals import *
 
@@ -22,7 +24,8 @@ character_one = Body(1)
 character_two = Body(2)
 
 # Tải hình ảnh nền
-background_image = pygame.image.load("./map/background.png")
+image = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../resource/img/map/background.png"))
+background_image = pygame.image.load(image)
 background_image = pygame.transform.scale(background_image, (Para.WIDTH, Para.HEIGHT))
 
 # Tạo màn hình

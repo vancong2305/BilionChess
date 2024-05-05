@@ -1,41 +1,86 @@
-import tkinter as tk
-from tkinter import messagebox
+import os
 
-def kick_player():
-    if player_role.get() == "Chủ phòng":
-        messagebox.showinfo("Thông báo", "Người chơi đã bị đá!")
-    else:
-        messagebox.showinfo("Thông báo", "Bạn không có quyền đá người chơi!")
+import pygame
 
-window = tk.Tk()
-window.title("Room Detail")
+class RoomMaster:
+    def __init__(self, room_name, player_name):
+        pygame.init()
+        self.screen_width, self.screen_height = 800, 600
+        self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
+        self.clock = pygame.time.Clock()
+        pygame.display.set_caption("Giao diện Room Master")
 
-player_name = "Người chơi"
-player_role = "Chủ phòng"
+        self.room_name = room_name
+        self.player_name = player_name
 
-canvas_width = 400
-canvas_height = 350
+        self.font = pygame.font.Font(None, 32)
 
-canvas = tk.Canvas(window, width=canvas_width, height=canvas_height)
-canvas.pack()
+        self.button_width, self.button_height = 200, 50
+        self.button_spacing = 20
+        self.button_x = (self.screen_width - self.button_width) // 2
 
-square_size = 200
-square1_x = (canvas_width - square_size) // 2
-square1_y = (canvas_height - square_size) // 2
+        self.buttons = [
+            Button(self.button_x, 300, self.button_width, self.button_height, "Đuổi", self.kick_player),
+            Button(self.button_x, 300 + self.button_height + self.button_spacing, self.button_width, self.button_height, "Giải tán", self.dismiss_room),
+            Button(self.button_x, 300 + (self.button_height + self.button_spacing) * 2, self.button_width, self.button_height, "Bắt đầu", self.start_game)
+        ]
 
-square2_x = (canvas_width - square_size) // 2
-square2_y = (canvas_height + square_size + 50) // 2
+        self.running = False
 
-canvas.create_rectangle(square1_x, square1_y, square1_x + square_size, square1_y + square_size, fill="blue")
-canvas.create_rectangle(square2_x, square2_y, square2_x + square_size, square2_y + square_size, fill="green")
+    def handle_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+            for button in self.buttons:
+                button.handle_event(event)
 
-player_name_label = tk.Label(window, text=player_name, font=("Arial", 20, "bold"))
-player_name_label.place(relx=0.5, rely=0.5 - square_size / canvas_height, anchor=tk.CENTER)
+    def draw(self):
+        self.screen.fill((255, 255, 255))
+        label_surface = self.font.render("Chủ phòng: " + self.room_name, True, (0, 0, 0))
+        label_rect = label_surface.get_rect(center=(self.screen_width // 2, 100))
+        self.screen.blit(label_surface, label_rect)
+        grandparent_directory = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        font_path = os.path.join(grandparent_directory, 'ready', 'Arial.ttf')
 
-player_role_label = tk.Label(window, text=player_role, font=("Arial", 14))
-player_role_label.place(relx=0.5, rely=0.5 + square_size / canvas_height, anchor=tk.CENTER)
+        self.font = pygame.font.Font(font_path, 32)
+        player_label_surface = self.font.render("Thành viên: " + self.player_name, True, (0, 0, 0))
+        player_label_rect = player_label_surface.get_rect(center=(self.screen_width // 2, 200))
+        self.screen.blit(player_label_surface, player_label_rect)
 
-kick_button = tk.Button(window, text="Kick Player", command=kick_player)
-kick_button.place(relx=0.5, rely=0.5 + (2 * square_size + 50) / canvas_height, anchor=tk.CENTER)
+        for button in self.buttons:
+            button.draw(self.screen, self.font)
 
-window.mainloop()
+        pygame.display.flip()
+
+    def kick_player(self):
+        print("Đuổi người chơi")
+
+    def dismiss_room(self):
+        print("Giải tán phòng")
+
+    def start_game(self):
+        print("Bắt đầu trò chơi")
+
+    def run(self):
+        self.running = True
+        while self.running:
+            self.handle_events()
+            self.draw()
+            self.clock.tick(60)
+
+class Button:
+    def __init__(self, x, y, width, height, text, action):
+        self.rect = pygame.Rect(x, y, width, height)
+        self.text = text
+        self.action = action
+
+    def draw(self, screen, font):
+        pygame.draw.rect(screen, (0, 0, 0), self.rect)
+        text_surface = font.render(self.text, True, (255, 255, 255))
+        text_rect = text_surface.get_rect(center=self.rect.center)
+        screen.blit(text_surface, text_rect)
+
+    def handle_event(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if self.rect.collidepoint(event.pos):
+                self.action()

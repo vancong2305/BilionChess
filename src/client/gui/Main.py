@@ -1,3 +1,3 @@
-from src.client.gui.ready.Identify import IdentifyScreen
+from src.client.gui.ready.IdentifyScreen import IdentifyScreen
 
 IdentifyScreen().run()

@@ -3,12 +3,13 @@ import os
 import pygame
 from pygame.locals import *
 
-from src.client.gui.room.RoomScreen import RoomScreen
+from src.client.gui.room.WelcomeScreen import WelcomeScreen
 
 
 class IdentifyScreen:
     def __init__(self):
         pygame.init()
+        pygame.display.set_caption("Xác thực người chơi")
         self.screen = pygame.display.set_mode((400, 300))
         self.clock = pygame.time.Clock()
         self.name_input = NameInput(40, 125, 320, 50)
@@ -19,6 +20,8 @@ class IdentifyScreen:
         self.caption = "My Screen"
         self.running = False
 
+    def get_name_input_content(self):
+        return self.name_input.text
     def run(self):
         self.running = True
         while self.running:
@@ -40,6 +43,7 @@ class IdentifyScreen:
 
 #Sub class
 class NameInput:
+    text = ''
     def __init__(self, x, y, width, height):
         self.x = x
         self.y = y
@@ -63,10 +67,15 @@ class NameInput:
                 if event.key == pygame.K_RETURN:
                     print("Tên đã được nhập:", self.text)
                     self.text = ''
+                    NameInput.text = self.text
+                    pygame.quit()
+                    WelcomeScreen(self.text).run()
                 elif event.key == pygame.K_BACKSPACE:
                     self.text = self.text[:-1]
+                    NameInput.text = self.text
                 else:
                     self.text += event.unicode
+                    NameInput.text = self.text
 
     def draw(self, screen):
         # Vẽ hình chữ nhật vùng nhập tên
@@ -91,10 +100,13 @@ class Button:
         if event.type == pygame.MOUSEBUTTONDOWN:
             # Kiểm tra xem chuột có được nhấn vào nút hay không
             if pygame.Rect(self.x, self.y, self.width, self.height).collidepoint(event.pos):
-                print("Nút Xác nhận đã được nhấn")
                 pygame.quit()
-                RoomScreen().run()
+                WelcomeScreen(NameInput.text).run()
 
+                # RoomListScreen().run()
+
+    def print_input_content(self):
+        self.screen.print_input_content()
     def draw(self, screen):
         # Vẽ hình chữ nhật nút
         pygame.draw.rect(screen, (50, 110, 120), (self.x, self.y, self.width, self.height))
