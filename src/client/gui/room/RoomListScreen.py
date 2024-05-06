@@ -1,6 +1,7 @@
 import pygame
 from pygame.locals import *
 
+
 class RoomListScreen:
     def __init__(self):
         pygame.init()
@@ -19,19 +20,6 @@ class RoomListScreen:
         room_height = 100  # Chiều cao của mỗi phần tử (title, content, button)
         room_y = 10  # Vị trí y của phần tử đầu tiên
 
-        class BackButton:
-            def __init__(self):
-                self.button_text = "Trở về"
-                self.button_surface = self.font.render(self.button_text, True, (255, 255, 255))
-                self.button_width = 100
-                self.button_height = 50
-                self.button_x = (self.width - self.button_width) // 2
-                self.button_y = self.height - self.button_height - 10
-
-            def draw(self, surface):
-                pygame.draw.rect(surface, (0, 0, 255), pygame.Rect(self.button_x, self.button_y, self.button_width, self.button_height))
-                surface.blit(self.button_surface, (self.button_x + 10, self.button_y + 10))
-
         class Element:
             def __init__(self, title, content):
                 self.font = pygame.font.Font(None, 36)
@@ -41,13 +29,15 @@ class RoomListScreen:
                 self.title_surface = self.font.render(self.title, True, (0, 0, 0))
                 self.content_surface = self.font.render(self.content, True, (0, 0, 0))
                 self.button_surface = self.font.render(self.button_text, True, (255, 255, 255))
+                self.button_rect = pygame.Rect(0, 0, 65, 40)  # Button's rectangle
 
             def draw(self, surface, x, y):
                 surface.blit(self.title_surface, (x, y))
                 surface.blit(self.content_surface, (x, y + 40))
                 button_x = x + surface.get_width() - self.button_surface.get_width() - 50
                 button_y = y + 10
-                pygame.draw.rect(surface, (0, 0, 255), pygame.Rect(button_x, button_y, 65, 40))
+                self.button_rect.topleft = (button_x, button_y)  # Update button's position
+                pygame.draw.rect(surface, (0, 0, 255), self.button_rect)
                 surface.blit(self.button_surface, (button_x + 10, button_y + 10))
 
         self.elements = []
@@ -60,7 +50,8 @@ class RoomListScreen:
         self.scroll_y = 0
         self.max_scroll_y = max(content_height - self.height, 0)  # Giới hạn cuộn
         # self.max_drag_distance = room_height * len(self.elements) - self.height  # Giới hạn kéo tương đương với số lượng phần tử
-        self.max_drag_distance = room_height * len(self.elements) - self.height  # Giới hạn kéo tương đương với số lượng phần tử
+        self.max_drag_distance = room_height * len(
+            self.elements) - self.height  # Giới hạn kéo tương đương với số lượng phần tử
 
         self.running = False
         self.is_dragging = False
@@ -69,11 +60,16 @@ class RoomListScreen:
     def handle_event(self, event):
         if event.type == QUIT:
             self.running = False
+            exit(0)
 
         elif event.type == MOUSEBUTTONDOWN:
             if event.button == 1:
                 self.is_dragging = True
                 self.last_mouse_pos = pygame.mouse.get_pos()
+                # Kiểm tra sự kiện click vào button
+                for element in self.elements:
+                    if element.button_rect.collidepoint(event.pos):
+                        print("Button Clicked!")  # Thực hiện hành động tương ứng khi button được click
 
         elif event.type == MOUSEBUTTONUP:
             if event.button == 1:

@@ -59,7 +59,7 @@ class WelcomeScreen:
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    self.quit_game()
+                    exit(0)
                 for button in self.buttons:
                     button.handle_event(event)
 
