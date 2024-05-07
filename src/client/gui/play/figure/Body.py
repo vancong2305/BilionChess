@@ -5,13 +5,14 @@ import pygame
 
 from src.client.gui.parameter.Para import Para
 from src.client.gui.play.figure.HealthBar import HealthBar
-
-
+from src.client.gui.play.figure.Store import Store
 class Body:
     animation_interval = 100
     current_image_index = 0
     position_x = 50
     position_y = 50
+    player_one = None
+    player_two = None
     def __init__(self, character_type):
         self.character_type = character_type
         self.action = "idle"  # Hành động mặc định là "idle"
@@ -20,6 +21,7 @@ class Body:
         # Tạo một đối tượng thanh máu
         self.health_bar = HealthBar(100, 100, Para.SIZE / 2, 10, 100)
         self.health_bar.decrease_health(20)
+
     def load_images(self):
         image_paths = []
         if self.character_type == 1:
@@ -96,9 +98,7 @@ class Body:
         if current_time - self.animation_timer > self.animation_interval:
             self.current_image_index = (self.current_image_index + 1) % len(self.images)
             self.animation_timer = current_time
-
-    def move(self, screen, x, y, duration):
-        self.action = "run"
+    def move(self, screen, target_x, target_y, duration):
         start_time = time.time()
         elapsed_time = 0
         start_x = self.position_x  # Vị trí ban đầu của x
@@ -108,8 +108,25 @@ class Body:
             current_time = time.time()
             elapsed_time = current_time - start_time
             progress = elapsed_time / duration
-            self.position_x = start_x + (x - start_x) * progress
-            self.position_y = start_y + (y - start_y) * progress
-            self.draw(screen)  # Vẽ lại hình ảnh ở vị trí mới
-            pygame.display.flip()  # Cập nhật màn hình
-            time.sleep(0.001)
+
+            # Calculate new position
+            self.position_x = int(start_x + (target_x - start_x) * progress)
+            self.position_y = int(start_y + (target_y - start_y) * progress)
+
+            # Clear the screen
+            screen.fill((115, 115, 115))
+            Store.map.draw(screen)  # Vẽ lại nền background
+            Body.player_one.update("idle")
+            Body.player_two.update("run")
+            Body.player_one.draw(screen)
+            Body.player_two.draw(screen)
+            # Draw character at the new position
+            self.draw(screen)
+
+            pygame.display.flip()
+
+    def moveList(character, screen, positions, duration):
+        for position in positions:
+            character.move(screen, position[0], position[1], duration)
+            # Dừng trong một khoảng thời gian trước khi di chuyển đến vị trí tiếp theo
+

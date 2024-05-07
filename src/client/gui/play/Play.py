@@ -1,4 +1,7 @@
-import os
+# Game is store object will change
+# Store is manage object not change
+
+
 import time
 
 import pygame
@@ -21,15 +24,12 @@ class Game:
         self.character_one = Body(1)
         self.character_two = Body(2)
 
-        image = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../resource/img/map/background.png"))
-        self.background_image = pygame.image.load(image)
-        self.background_image = pygame.transform.scale(self.background_image, (Para.WIDTH, Para.HEIGHT))
-
     def start(self):
         self.running = True
         start_time = time.time()
-        your_function_interval = 10  # Khoảng thời gian (giây) giữa các lần gọi hàm your_function()
+        your_function_interval = 7  # Khoảng thời gian (giây) giữa các lần gọi hàm your_function()
         your_function_last_call = start_time
+        # Tạo bản sao của background ban đầu
         while self.running:
             self.handle_events()
             self.update()
@@ -37,7 +37,10 @@ class Game:
             current_time = time.time()
             elapsed_time = current_time - your_function_last_call
             if elapsed_time >= your_function_interval:
-                self.character_two.move(self.screen, 200, 200, 1)
+                # Sử dụng hàm moveList() để di chuyển nhân vật đến danh sách các vị trí
+                target_positions = [(50, 200), (100, 300), (200, 150), (50, 50)]
+                self.character_two.moveList(self.screen, target_positions, 1)
+                # self.character_two.move(self.screen, 50, 200, 1)
                 your_function_last_call = current_time
             self.clock.tick(60)
         pygame.quit()
@@ -49,11 +52,12 @@ class Game:
         self.character_one.update("idle")
         self.character_two.update("idle")
     def render(self):
-        self.screen.fill((0, 188, 110))  # Màu xanh lá cây
-        self.screen.blit(self.background_image, (0, 0))
+        self.screen.fill((115, 115, 115))  # Màu xám
         self.map.draw(self.screen)
         self.character_one.draw(self.screen)
         self.character_two.draw(self.screen)
+        Body.player_one = self.character_one
+        Body.player_two = self.character_two
         pygame.display.flip()
 
 # Sử dụng lớp Game từ một lớp khác
