@@ -1,9 +1,12 @@
 import threading
 import json
 import socket
+import signal
+import sys
 
 HOST = '127.0.0.1'  # Server's IP address
-PORT = 9999         # Server's port
+PORT = 10000        # Server's port
+is_running = True   # Flag to track server state
 
 def handle_client(client_socket):
     try:
@@ -40,14 +43,22 @@ def handle_client(client_socket):
         # Ensure the client socket is closed even in case of exceptions
         client_socket.close()
 
+def signal_handler(sig, frame):
+    global is_running
+    print('Server shutting down')
+    is_running = False
+
+# Register the signal handler for Ctrl+C
+signal.signal(signal.SIGINT, signal_handler)
+
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind((HOST, PORT))
     s.listen(8)
 
     print('Server listening on port', PORT)
-    while True:
+    while is_running:
         client, addr = s.accept()
         # Create a new thread or use an asynchronous framework to handle concurrent clients
         threading.Thread(target=handle_client, args=(client,)).start()
 
-print('Server shutting down')
+print('Server stopped')
