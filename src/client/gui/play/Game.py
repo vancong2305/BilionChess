@@ -9,7 +9,7 @@ from pygame.locals import *
 
 from src.client.gui.parameter.Para import Para
 from src.client.gui.play.figure.Body import Body
-from src.client.gui.play.map.Ground import Map
+from src.client.gui.play.map.Map import Map
 
 
 class Game:
