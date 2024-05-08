@@ -24,7 +24,6 @@ class WelcomeScreen:
         self.button_x = (self.screen_width - self.button_width) / 2
 
         # Đường dẫn đến hình ảnh nền
-        # Đường dẫn đến hình ảnh nền
         image_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../resource/img/map/background.png'))
         print(image_path)
         # Tạo hình ảnh nền từ file
@@ -44,16 +43,15 @@ class WelcomeScreen:
         print("Chơi trực tuyến")
 
     def create_room(self):
-        pygame.quit()
-        room_master = RoomMaster("My Room", "Bard").run()
-        print("Tạo phòng")
+        RoomMaster("Vancong", "Unknown").run()
 
     def play_with_ai(self):
+        pygame.quit()
         print("Chơi với máy")
 
     def quit_game(self):
         pygame.quit()
-        sys.exit()
+        exit(0)
 
     def run(self):
         while True:
@@ -62,20 +60,17 @@ class WelcomeScreen:
                     exit(0)
                 for button in self.buttons:
                     button.handle_event(event)
-
             self.screen.fill((255, 255, 255))
             # Vẽ hình ảnh nền lên màn hình
             self.screen.blit(self.background, (0, 0))
             label_surface = self.font.render("Xin chào " + WelcomeScreen.player_name, True, (0, 0, 0))
             label_rect = label_surface.get_rect(center=(self.screen_width//2, 100))
             self.screen.blit(label_surface, label_rect)
-
             for button in self.buttons:
                 button.draw(self.screen, self.font)
-                
+
             pygame.display.flip()
             self.clock.tick(60)
-
 class Button:
     def __init__(self, x, y, width, height, text, action):
         self.rect = pygame.Rect(x, y, width, height)

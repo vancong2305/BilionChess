@@ -6,6 +6,9 @@ import pygame
 from src.client.gui.parameter.Para import Para
 from src.client.gui.play.figure.HealthBar import HealthBar
 from src.client.gui.play.figure.Store import Store
+from src.client.gui.play.map.Map import Map
+
+
 class Body:
     animation_interval = 100
     current_image_index = 0
@@ -126,6 +129,7 @@ class Body:
             pygame.display.flip()
 
     def moveList(character, screen, positions, duration):
+        positions = Map.map_positions
         for position in positions:
             character.move(screen, position[0], position[1], duration)
             # Dừng trong một khoảng thời gian trước khi di chuyển đến vị trí tiếp theo

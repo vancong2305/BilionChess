@@ -100,9 +100,9 @@ class Button:
         if event.type == pygame.MOUSEBUTTONDOWN:
             # Kiểm tra xem chuột có được nhấn vào nút hay không
             if pygame.Rect(self.x, self.y, self.width, self.height).collidepoint(event.pos):
+                text = NameInput.text
                 pygame.quit()
-                WelcomeScreen(NameInput.text).run()
-
+                WelcomeScreen(text).run()
                 # RoomListScreen().run()
 
     def print_input_content(self):

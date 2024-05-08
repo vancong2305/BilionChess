@@ -58,6 +58,8 @@ class Game:
         self.character_two.draw(self.screen)
         Body.player_one = self.character_one
         Body.player_two = self.character_two
+        self.map.get_position()
+        Map.map_positions = self.map.positions
         pygame.display.flip()
 
 # Sử dụng lớp Game từ một lớp khác
