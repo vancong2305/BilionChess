@@ -17,6 +17,7 @@ grass_paths_image = pygame.transform.smoothscale(grass_paths_image, (Para.SIZE, 
 
 class Map:
     map_positions = []
+    map_corner = []
     numbers = [0, 1, 2, 3, 4, 5, 6, 7]
     numbers1 = [0, 1, 2, 3]
     gap = 20
@@ -72,6 +73,26 @@ class Map:
             x = num * (Para.SIZE + self.gap) + Para.SIZE / 2  # Tọa độ x
             y = Para.SIZE  # Tọa độ y
             self.positions.append((x, y))
-        self.positions.pop()  # Remove the last element without storing it
-        print(self.positions)
+
+    def get_corner_positions(self):
+        # Extract top-left corner position
+        top_left_x = self.numbers[0] * (Para.SIZE + self.gap) + Para.SIZE / 2
+        top_left_y = Para.SIZE
+
+        # Extract top-right corner position
+        top_right_x = (len(self.numbers) - 1) * (Para.SIZE + self.gap) + Para.SIZE / 2
+        top_right_y = Para.SIZE
+
+        # Extract bottom-left corner position
+        bottom_left_x = Para.SIZE / 2
+        bottom_left_y = (len(self.numbers1) + 1) * (Para.SIZE + self.gap) + Para.SIZE
+
+        # Extract bottom-right corner position
+        bottom_right_x = (len(self.numbers) - 1) * (Para.SIZE + self.gap) + Para.SIZE / 2
+        bottom_right_y = (len(self.numbers1) + 1) * (Para.SIZE + self.gap) + Para.SIZE
+
+        # Return corner positions as a list of tuples
+        return [(top_left_x, top_left_y), (top_right_x, top_right_y),
+                (bottom_left_x, bottom_left_y), (bottom_right_x, bottom_right_y)]
+
 
