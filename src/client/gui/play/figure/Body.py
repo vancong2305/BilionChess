@@ -2,6 +2,7 @@ import os
 import time
 
 import pygame
+from pygame import QUIT
 
 from src.client.gui.parameter.Para import Para
 from src.client.gui.play.figure.HealthBar import HealthBar
@@ -139,7 +140,6 @@ class Body:
         elapsed_time = 0
         start_x = self.position_x  # Vị trí ban đầu của x
         start_y = self.position_y  # Vị trí ban đầu của y
-
         while elapsed_time < duration:
             current_time = time.time()
             elapsed_time = current_time - start_time
@@ -150,6 +150,7 @@ class Body:
 
             # Clear the screen
             screen.fill((115, 115, 115))
+            self.handle_events()
             Store.map.draw(screen)  # Vẽ lại nền background
 
             p_x = Map.map_corner[1][0]
@@ -167,7 +168,10 @@ class Body:
             self.draw(screen)
 
             pygame.display.flip()
-
+    def handle_events(self):
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                exit(0)
     def moveList(character, screen, positions, duration):
         # positions = Map.map_positions
         new_position = []

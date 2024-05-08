@@ -8,6 +8,7 @@ import pygame
 from pygame.locals import *
 
 from src.client.gui.parameter.Para import Para
+from src.client.gui.play.dice.Dice import Dice
 from src.client.gui.play.figure.Body import Body
 from src.client.gui.play.map.Map import Map
 
@@ -20,7 +21,7 @@ class Game:
         self.screen = pygame.display.set_mode((Para.WIDTH, Para.HEIGHT))
         self.clock = pygame.time.Clock()
         self.running = False
-
+        self.dice = Dice()
         self.map = Map()
         self.character_one = Body(1)
         self.character_two = Body(2)
@@ -34,12 +35,11 @@ class Game:
             self.render()
             if self.state == "run":
                 # Sử dụng hàm moveList() để di chuyển nhân vật đến danh sách các vị trí
-                x, y = (1, 2)
                 Map.map_positions = Map.map_positions
                 target_positions = Map.map_positions
                 self.character_two.moveList(self.screen, target_positions, 1)
                 self.state = self.character_two.action
-            self.clock.tick(30)
+            self.clock.tick(20)
         pygame.quit()
     def handle_events(self):
         for event in pygame.event.get():
@@ -59,6 +59,7 @@ class Game:
         self.map.get_corner_positions()
         Map.map_positions = self.map.positions
         Map.map_corner = self.map.get_corner_positions()
+        self.dice.draw(self.screen)
         pygame.display.flip()
 
 # Sử dụng lớp Game từ một lớp khác
