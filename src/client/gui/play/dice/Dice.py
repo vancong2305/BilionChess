@@ -10,11 +10,12 @@ class Dice:
     position_x = 50
     position_y = 50
     rolling_result = 0
-
+    state = "stop"
     def __init__(self):
         self.action = "idle"
         self.images = self.load_images()
         self.animation_timer = pygame.time.get_ticks()
+
     def load_images(self):
         image_paths = []
         if self.action == "roll":
@@ -52,7 +53,9 @@ class Dice:
         self.current_image_index = 0
 
     def rolling(self):
-        self.current_image_index = (self.current_image_index + 1) % len(self.images)
+        self.current_image_index += 1
+        if self.current_image_index >= len(self.images):
+            self.current_image_index = 0
 
     def result(self, number):
         self.current_image_index = number
@@ -61,28 +64,37 @@ class Dice:
         current_image = self.images[self.current_image_index]
         screen.blit(current_image, (Para.WIDTH/2-Para.SIZE/2-5, Para.HEIGHT/2+Para.SIZE*1.5))
 
-    def run(self):
+    def run(self, screen):
         total_time = 3000  # Thời gian chạy quay liên tục (milliseconds)
         start_time = pygame.time.get_ticks()
         end_time = start_time + total_time
 
+        self.action = "roll"  # Set the action to "roll"
+        self.images = self.load_images()  # Load the images for the current action
+
         while pygame.time.get_ticks() < end_time:
             self.rolling()
-            self.draw()
+            screen.fill((115, 115, 115), (
+            Para.WIDTH / 2 - Para.SIZE / 2 - 5, Para.HEIGHT / 2 + Para.SIZE * 1.5, Para.SIZE,
+            Para.SIZE))  # Fill only the dice region with a background color
+            self.draw(screen)
             pygame.time.wait(self.animation_interval)
+            pygame.display.flip()
 
-        self.action = "stop"  # Đặt hành động là "idle"
+        self.action = "stop"  # Đặt hành động là "stop"
+        self.images = self.load_images()  # Load the images for the current action
         number = random.randint(0, 5)  # Số ngẫu nhiên từ 0 đến 5
-        self.images = self.load_images()
         self.result(number)
 
-        total_idle_time = 300  # Thời gian hiển thị hình ảnh trong trạng thái "idle" (milliseconds)
+        total_idle_time = 1000  # Thời gian hiển thị hình ảnh trong trạng thái "idle" (milliseconds)
         idle_start_time = pygame.time.get_ticks()
         idle_end_time = idle_start_time + total_idle_time
 
         while pygame.time.get_ticks() < idle_end_time:
-            self.draw()
+            screen.fill((115, 115, 115), (
+                Para.WIDTH / 2 - Para.SIZE / 2 - 5, Para.HEIGHT / 2 + Para.SIZE * 1.5, Para.SIZE,
+                Para.SIZE))  # Fill only the dice region with a background color
+            self.draw(screen)
             pygame.time.wait(self.animation_interval)
-        pygame.quit()
-# dice = Dice()
-# dice.run()
+            pygame.display.flip()
+

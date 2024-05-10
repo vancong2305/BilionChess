@@ -18,13 +18,14 @@ class Body:
     player_one = None
     player_two = None
     state = 'idle'
+    screen = None
     def __init__(self, character_type):
         self.character_type = character_type
         self.action = "idle"  # Hành động mặc định là "idle"
         self.images = self.load_images()
         self.animation_timer = pygame.time.get_ticks()
         # Tạo một đối tượng thanh máu
-        self.health_bar = HealthBar(100, 100, Para.SIZE / 2, 10, 100)
+        self.health_bar = HealthBar(100, 100, Para.SIZE / 2, 8, 100)
         self.health_bar.decrease_health(20)
 
     def load_images(self):
@@ -123,7 +124,7 @@ class Body:
     def draw(self, screen):
         current_image = self.images[self.current_image_index]
         self.health_bar.x = self.position_x - Para.SIZE / 12
-        self.health_bar.y = self.position_y - Para.SIZE / 4
+        self.health_bar.y = self.position_y - Para.SIZE / 5
         self.health_bar.draw(screen)
         screen.blit(current_image, (self.position_x, self.position_y))
     def update(self, action):
@@ -183,7 +184,7 @@ class Body:
             for position in positions[2:-2]:  # Slicing to exclude first 2 and last 2 elements
                 if position in Map.map_corner:
                     new_position.append(position)
-                    duration+=0.5
+                    duration+=0.2
                     # Limit to 2 intermediate points (modify limit as needed)
                     if len(new_position) == 4:
                         break

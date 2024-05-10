@@ -1,1 +1,0 @@
-# The class will many attribute and it is form to validate data

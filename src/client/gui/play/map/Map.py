@@ -16,11 +16,13 @@ grass_paths_image = pygame.image.load(grass_paths)
 grass_paths_image = pygame.transform.smoothscale(grass_paths_image, (Para.SIZE, Para.SIZE))
 
 class Map:
+    map = None
     map_positions = []
     map_corner = []
     numbers = [0, 1, 2, 3, 4, 5, 6, 7]
     numbers1 = [0, 1, 2, 3]
     gap = 20
+    screen = None
     def __init__(self):
         self.positions = []
         pass

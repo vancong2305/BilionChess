@@ -66,10 +66,9 @@ class NameInput:
             if self.active:
                 if event.key == pygame.K_RETURN:
                     print("Tên đã được nhập:", self.text)
-                    self.text = ''
                     NameInput.text = self.text
                     pygame.quit()
-                    WelcomeScreen(self.text).run()
+                    WelcomeScreen(NameInput.text).run()
                 elif event.key == pygame.K_BACKSPACE:
                     self.text = self.text[:-1]
                     NameInput.text = self.text
