@@ -20,27 +20,27 @@ class Dice:
         image_paths = []
         if self.action == "roll":
             image_paths = [
-                "../../resource/img/dice/roll/Dice_000.png",
-                "../../resource/img/dice/roll/Dice_001.png",
-                "../../resource/img/dice/roll/Dice_002.png",
-                "../../resource/img/dice/roll/Dice_003.png",
-                "../../resource/img/dice/roll/Dice_004.png",
-                "../../resource/img/dice/roll/Dice_005.png",
-                "../../resource/img/dice/roll/Dice_006.png",
-                "../../resource/img/dice/roll/Dice_007.png"
+                "../resource/img/dice/roll/Dice_000.png",
+                "../resource/img/dice/roll/Dice_001.png",
+                "../resource/img/dice/roll/Dice_002.png",
+                "../resource/img/dice/roll/Dice_003.png",
+                "../resource/img/dice/roll/Dice_004.png",
+                "../resource/img/dice/roll/Dice_005.png",
+                "../resource/img/dice/roll/Dice_006.png",
+                "../resource/img/dice/roll/Dice_007.png"
             ]
         elif self.action == "stop":
             image_paths = [
-                "../../resource/img/dice/idle/Dice_000.png",
-                "../../resource/img/dice/idle/Dice_001.png",
-                "../../resource/img/dice/idle/Dice_002.png",
-                "../../resource/img/dice/idle/Dice_003.png",
-                "../../resource/img/dice/idle/Dice_004.png",
-                "../../resource/img/dice/idle/Dice_005.png"
+                "../resource/img/dice/idle/Dice_000.png",
+                "../resource/img/dice/idle/Dice_001.png",
+                "../resource/img/dice/idle/Dice_002.png",
+                "../resource/img/dice/idle/Dice_003.png",
+                "../resource/img/dice/idle/Dice_004.png",
+                "../resource/img/dice/idle/Dice_005.png"
             ]
         elif self.action == "idle":
             image_paths = [
-                "../../resource/img/dice/idle/Dice_000.png"
+                "../resource/img/dice/idle/Dice_000.png"
             ]
         images = []
         for path in image_paths:

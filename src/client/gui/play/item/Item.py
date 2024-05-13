@@ -201,7 +201,7 @@ class Item:
             self.position_y = 222
             label_name = "Cỗ máy"
             label_price = "500$"
-            label_description = "+Tấn công: 300 +Mô tả: Kiệt tác chiến đấu mạnh mẽ, được lập trình bởi Văn Công!!!"
+            label_description = "+Tấn công: 300 +Mô tả: Luôn hoạt động ổn định, được lập trình bởi +Trương Văn Công!!!"
 
         elif self.character_type == 3:
             self.position_x = 510

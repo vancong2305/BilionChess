@@ -75,7 +75,6 @@ class Map:
             x = num * (Para.SIZE + self.gap) + Para.SIZE / 2  # Tọa độ x
             y = Para.SIZE  # Tọa độ y
             self.positions.append((x, y))
-
     def get_corner_positions(self):
         # Extract top-left corner position
         top_left_x = self.numbers[0] * (Para.SIZE + self.gap) + Para.SIZE / 2

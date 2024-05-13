@@ -1,5 +1,7 @@
 # Game is store object will change
 # Store is manage object not change
+import asyncio
+import json
 import threading
 import time
 from concurrent.futures import thread
@@ -7,6 +9,7 @@ from concurrent.futures import thread
 import pygame
 from pygame.locals import *
 
+from src.client.WebSocketClient import WebSocketClient
 from src.client.gui.parameter.Para import Para
 from src.client.gui.play.dice.Dice import Dice
 from src.client.gui.play.dice.Roll import Roll
@@ -17,7 +20,8 @@ from src.client.gui.play.map.Map import Map
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, match):
+        print(match)
         pygame.init()
         pygame.display.set_caption("Merchant Chess")
         self.getDataState = 1
@@ -35,12 +39,19 @@ class Game:
         self.item3 = Item(3)
         self.item4 = Item(4)
 
-    def start(self):
+    async def start(self):
         self.running = True
         # self.state = "run"
-        self.state = "run"
+        self.state = "stop"
         Dice.state = "roll"
         while self.running:
+            if not WebSocketClient.message_queue.empty():
+                message = WebSocketClient.message_queue.get()
+                # Xử lý tin nhắn từ server
+                parsed_data = json.loads(message)
+                if parsed_data.get('remaining_time'):
+                    self.information.set_time(parsed_data.get('remaining_time'))
+            await asyncio.sleep(1 / 60)
             self.handle_events()
             self.update()
             self.render()
@@ -49,8 +60,8 @@ class Game:
                 self.dice.run(self.screen)
             if self.state == "run":
                 # Sử dụng hàm moveList() để di chuyển nhân vật đến danh sách các vị trí
-                Map.map_positions = Map.map_positions
-                target_positions = Map.map_positions
+                map_positions = Map.map_positions
+                target_positions = [(pos['x'], pos['y']) for pos in map_positions[:5]]
                 self.character_two.moveList(self.screen, target_positions, 1)
                 self.state = self.character_two.action
             self.clock.tick(30)
@@ -108,5 +119,5 @@ class Game:
         pygame.display.flip()
 
 # Sử dụng lớp Game từ một lớp khác
-game = Game()
-game.start()
+# game = Game()
+# await game.start()
