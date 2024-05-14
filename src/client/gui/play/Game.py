@@ -23,7 +23,6 @@ from src.client.handle.MatchRequest import MatchRequest
 
 class Game:
     def __init__(self, match):
-        print(match)
         self.match = match
         pygame.init()
         pygame.display.set_caption("Merchant chess ID: " + Connect.ID.__str__())
@@ -55,12 +54,12 @@ class Game:
                 # Xử lý tin nhắn từ server
                 parsed_data = json.loads(message)
                 if parsed_data.get('remaining_time'):
-
                     self.information.set_time(parsed_data.get('remaining_time'))
                     if (parsed_data.get('remaining_time') == 20):
                         self.state = "roll"
                 if parsed_data.get('match_id'):
                     self.match = parsed_data
+                    print(parsed_data)
                     # print(parsed_data)
                     # users = parsed_data.get('users')
                     # hp_user1 = users[0]["hp"]

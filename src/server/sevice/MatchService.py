@@ -111,13 +111,13 @@ class MatchService:
                                     for item in match['items']:
                                         if item['user_id'] !=  match['turn_id']:
                                             if item['item_id'] == 2 and user.get('index') == item.get('index'):
-                                                user['hp'] -= 300
+                                                user['hp'] = user.get('hp') - item.get('attack')
                                             if item['item_id'] == 3 and user.get('index') == item.get('index'):
-                                                user['hp'] -= 1000
+                                                user['hp'] = user.get('hp') - item.get('attack')
                                             if item['item_id'] ==4 and user.get('index') == item.get('index'):
-                                                user['hp'] -= 500
+                                                user['hp'] = user.get('hp') - item.get('attack')
                                         if item['item_id'] == 1 and user.get('index') == item.get('index'):
-                                            user['hp'] -= 500
+                                            user['hp'] = user.get('hp') - item.get('attack')
                                         if user['hp'] <= 0:
                                             user['hp'] = 0
                                 await self.send_response_to_members(member, match)

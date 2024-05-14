@@ -200,36 +200,24 @@ class Body:
             if event.type == QUIT:
                 exit(0)
     def moveList(character, screen, positions, duration, number_char):
-        # positions = Map.map_positions
-        new_position = []
-        if len(positions) > 4:
-            new_position = []  # Initialize an empty list for key positions
-            new_position.append(positions[0])  # Append start position
+        if len(positions) == 1:
+            duration = duration
+        if len(positions) == 2:
+            duration = duration/2+0.1
+        if len(positions) == 3:
+            duration = duration/3+0.2
+        if len(positions) == 4:
+            duration = duration/4+0.3
+        if len(positions) == 5:
+            duration = duration/5+0.4
+        if len(positions) == 6:
+            duration = duration/6+0.5
 
-            # Check for intermediate points (max 2)
-            for position in positions[2:-2]:  # Slicing to exclude first 2 and last 2 elements
-                if position in Map.map_corner:
-                    new_position.append(position)
-                    duration+=0.2
-                    # Limit to 2 intermediate points (modify limit as needed)
-                    if len(new_position) == 4:
-                        break
-            new_position.append(positions[-1])
-            for i, position in enumerate(new_position):
-                if i == 0:  # Skip the first position (starting point)
-                    continue
-                # Move to the current position
-                if number_char == 1:
-                    character.move_one(screen, position[0], position[1], duration)
-                else:
-                    character.move_two(screen, position[0], position[1], duration)
-            character.update("idle")
-        else:
-            for position in positions:
-                if number_char == 1:
-                    character.move_one(screen, position[0], position[1], duration)
-                else:
-                    character.move_two(screen, position[0], position[1], duration)
-            character.update("idle")
+        for position in positions:
+            if number_char == 1:
+                character.move_one(screen, position[0], position[1], duration)
+            else:
+                character.move_two(screen, position[0], position[1], duration)
+        character.update("idle")
             # Dừng trong một khoảng thời gian trước khi di chuyển đến vị trí tiếp theo
 
