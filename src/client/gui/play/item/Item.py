@@ -1,6 +1,5 @@
 import os
 import time
-
 import pygame
 from pygame import QUIT
 
@@ -173,48 +172,50 @@ class Item:
             raise ValueError("Invalid character type")
         images = []
         for path in image_paths:
-            print(os.path.dirname(__file__))
             image_path = os.path.abspath(os.path.join(os.path.dirname(__file__), path))  # Sửa đường dẫn ở đây
             image = pygame.image.load(image_path)
             resized_image = pygame.transform.smoothscale(image, (Para.SIZE // 3, Para.SIZE // 2))
             images.append(resized_image)
         return images
-    def draw(self, screen):
-        current_image = self.images[self.current_image_index]
-        self.health_bar.x = self.position_x - Para.SIZE / 12
-        self.health_bar.y = self.position_y - Para.SIZE / 4
-        self.health_bar.draw(screen)
-        screen.blit(current_image, (self.position_x, self.position_y))
-
-    import pygame
-
+    def draw(self, screen, x, y, soldiers, color):
+        current_image = self.images[0]
+        screen.blit(current_image, (x, y))
+        font = pygame.font.Font(None, 12)  # Chọn font và kích thước chữ
+        label_text = "Lính của " + soldiers.__str__()
+        label_surface = font.render(label_text, True, (141, 238, 238))
+        if color == 2:
+            label_surface = font.render(label_text, True, (244,164,96))  # Màu chữ là trắng (255, 255, 255)
+        label_rect = label_surface.get_rect()
+        label_rect.centerx = x + current_image.get_width() // 2  # Vị trí x chính giữa của label
+        label_rect.centery = y - 20  # Vị trí y trên đầu của label
+        screen.blit(label_surface, label_rect)
     def drawDefault(self, screen):
         if self.character_type == 1:
             self.position_x = 190
             self.position_y = 222
             label_name = "Xác sống"
-            label_price = "300$"
+            label_price = "300 VND"
             label_description = "+Tấn công: 500 +Mô tả: Dường như không có trí tuệ, không phân biệt địch ta!!!"
 
         elif self.character_type == 2:
             self.position_x = 350
             self.position_y = 222
             label_name = "Cỗ máy"
-            label_price = "500$"
+            label_price = "500 VND"
             label_description = "+Tấn công: 300 +Mô tả: Luôn hoạt động ổn định, được lập trình bởi +Trương Văn Công!!!"
 
         elif self.character_type == 3:
             self.position_x = 510
             self.position_y = 222
             label_name = "Nhẫn giả"
-            label_price = "1000$"
+            label_price = "1000 VND"
             label_description = "+Tấn công: 1000 +Mô tả: Sức tấn công ưu việt trong tất cả lính đánh thuê!!!"
 
         elif self.character_type == 4:
             self.position_x = 670
             self.position_y = 222
             label_name = "Hiệp sĩ"
-            label_price = "2000$"
+            label_price = "2000 VND"
             label_description = "+Tấn công: 500 +Mô tả: Hiệp sĩ luôn trung thành. Mua năm hiệp sĩ sẽ thắng!!!"
 
         current_image = self.images[self.current_image_index]
@@ -262,7 +263,7 @@ class Item:
         text_rect = button_text.get_rect(
             center=(button_position_x + button_width // 2, button_position_y + button_height // 2))
         screen.blit(button_text, text_rect)
-
+        self.button_buy_rect = text_rect
         screen.blit(label_name_text, (label_name_x, label_name_y))
         screen.blit(label_price_text, (label_price_x, label_price_y))
 

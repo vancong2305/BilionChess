@@ -17,6 +17,9 @@ class WebSocketServer:
     async def remove(self, id):
         await UserService().delete(id)
         await RoomService().hard_delete(id)
+        for match in MatchService.matchs:
+            if match["match_id"] == id:
+                MatchService.matchs.remove(match)  # Xóa phần tử
 
     async def handle_client(self, websocket):
         self.clients.add(websocket)

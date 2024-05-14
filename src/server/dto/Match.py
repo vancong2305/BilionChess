@@ -35,7 +35,8 @@ class Match:
         Match.match = {
             "match_id": 1,
             "turn_id": 0,
-            "user_id": 1,
+            "char_id": 1,
+            "request_status": 0,
             "user_roll": 0,
             "roll": 0,
             "dice": 1,
@@ -72,6 +73,7 @@ class Match:
                 #         "y": 80
                 #     },
                 #     "user_id": 1,
+                #     "user_color": 1,
                 #     "index": 1
                 # }
             ],

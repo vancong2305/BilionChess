@@ -64,8 +64,8 @@ class Dice:
         current_image = self.images[self.current_image_index]
         screen.blit(current_image, (Para.WIDTH/2-Para.SIZE/2-5, Para.HEIGHT/2+Para.SIZE*1.5))
 
-    def run(self, screen):
-        total_time = 3000  # Thời gian chạy quay liên tục (milliseconds)
+    def run(self, screen, number):
+        total_time = 1000  # Thời gian chạy quay liên tục (milliseconds)
         start_time = pygame.time.get_ticks()
         end_time = start_time + total_time
 
@@ -83,7 +83,6 @@ class Dice:
 
         self.action = "stop"  # Đặt hành động là "stop"
         self.images = self.load_images()  # Load the images for the current action
-        number = random.randint(0, 5)  # Số ngẫu nhiên từ 0 đến 5
         self.result(number)
 
         total_idle_time = 1000  # Thời gian hiển thị hình ảnh trong trạng thái "idle" (milliseconds)

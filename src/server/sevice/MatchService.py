@@ -61,16 +61,16 @@ class MatchService:
         await asyncio.sleep(2)
         turn_id_1 = int(room['members'][0]['user_id'])
         turn_id_2 = int(room['members'][1]['user_id'])
-        # Tạo task riêng để đếm ngược 30 giây
+        # Tạo task riêng để đếm ngược 20 giây
         self.timer_task = asyncio.create_task(self.start_match(room['members'], user_id, turn_id_1, turn_id_2))
     async def start_match(self, member, user_id, turn_id_1, turn_id_2):
-        remaining_time = 30
+        remaining_time = 20
         uid = user_id
         t1 = turn_id_1
         t2 = turn_id_2
         turn = t1
         boolean_check = True
-
+        char_state = 1
         while boolean_check:
             await asyncio.sleep(1)
             response = {
@@ -78,11 +78,14 @@ class MatchService:
             }
             await self.send_response_to_members(member, response)
             remaining_time -= 1
+            boolchk = True
             for match in MatchService.matchs:
                 if match.get('match_id') == uid:
+                    boolchk = False
                     # Quay xúc sắc và gửi lại response cho user nếu lượt này chưa roll, cập nhật lại vị trí của user
-                    match['turn_id'] = turn
                     if (match["roll"] == 0):
+                        match['turn_id'] = turn
+                        match['char_id'] = char_state
                         random_number = self.random_1_to_6()
                         match['dice'] = random_number
                         for user in match["users"]:
@@ -99,29 +102,54 @@ class MatchService:
                                     p = match['positions'][selected_position - 1]['position']  # Sửa 'postion' thành 'position'
                                     match['move_positions'].append(p)
                                 user['position'] = match['positions'][selected_positions[-1]-1]['position']
-                                user['index'] = match['positions'][selected_positions[-1]]['index']
+                                user['index'] = match['positions'][selected_positions[-1]-1]['index']
                                 match['dice'] = random_number
                                 match['roll'] = 1
+                                # Trừ máu nếu đi vào ô của đối thủ
+                                # Nếu item là 1 trừ máu luôn bất kể ai sở hữu nếu đi vào index đó
+                                if len(match['items'])>0:
+                                    for item in match['items']:
+                                        if item['user_id'] !=  match['turn_id']:
+                                            if item['item_id'] == 2 and user.get('index') == item.get('index'):
+                                                user['hp'] -= 300
+                                            if item['item_id'] == 3 and user.get('index') == item.get('index'):
+                                                user['hp'] -= 1000
+                                            if item['item_id'] ==4 and user.get('index') == item.get('index'):
+                                                user['hp'] -= 500
+                                        if item['item_id'] == 1 and user.get('index') == item.get('index'):
+                                            user['hp'] -= 500
+                                        if user['hp'] <= 0:
+                                            user['hp'] = 0
                                 await self.send_response_to_members(member, match)
                                 break
+            if boolchk:
+                boolean_check = False
             if remaining_time == 0:
                 if turn == t1:
                     # Lấy ra match hiện tại khi hết giờ
                     # Đặt lại giá trị turn trong match
                     turn = t2
-                    match['turn_id'] = turn
-                    match['roll'] = 0
-                    match["request_item_id"] = 0
-                    match["move_positions"] = []
+                    for match in MatchService.matchs:
+                        if match.get('match_id') == uid:
+                            match['turn_id'] = turn
+                            match['roll'] = 0
+                            char_state = 2
+                            match["request_item_id"] = 0
+                            match["request_status"] = 0
+                            match["move_positions"] = []
                 else:
                     # Lấy ra match hiện tại khi hết giờ
                     # Đặt lại giá trị turn trong match
                     turn = t1
-                    match['turn_id'] = turn
-                    match['roll'] = 0
-                    match["request_item_id"] = 0
-                    match["move_positions"] = []
-                remaining_time = 30
+                    for match in MatchService.matchs:
+                        if match.get('match_id') == uid:
+                            match['turn_id'] = turn
+                            match['roll'] = 0
+                            char_state = 1
+                            match["request_item_id"] = 0
+                            match["request_status"] = 0
+                            match["move_positions"] = []
+                remaining_time = 20
 
 
     async def send_response_to_members(self, members, response):
@@ -142,43 +170,42 @@ class MatchService:
                 # Nếu request gửi lên là item trong khi vẫn đang trong lượt thì cho đi, tính toán tiền mua đủ không
                 # Cho mua thay thế vị trí cũ luôn
                 # Nếu đủ thì cập nhật lại, trừ tiền và gửi match cho toàn bộ user
-                if (match["request_item_id"] > 0 and match["request_item_id"] < 5 and user_id == match["turn_id"]):
-                    mercenary = Match.mercenary[match["request_item_id"] - 1]
+                if match["request_status"] == 0 and item_id > 0 and item_id < 5 and int(user_id) == match["turn_id"]:
+                    mercenary = Match.mercenary[item_id - 1]
                     for user in match["users"]:
-                        if user.get('user_id') == user_id:
-                            if ((user.get('gold') - mercenary.get('price')) >= 0):
+                        if user.get('user_id') == int(user_id):
+                            if (user.get('gold') - mercenary.get('price')) >= 0:
                                 user['gold'] = user.get('gold') - mercenary.get('price')
                                 bool = True
+                                match["request_status"] = 1
                                 # Kiểm tra xem vị trí đang đứng có item hay chưa, có thì thay thế uôn
                                 for item in match["items"]:
                                     if user.get('index') == item.get('index'):
-                                        item['user_id'] = user_id
-                                        item['item_id'] = match["request_item_id"]
+                                        item['user_id'] = int(user_id)
+                                        item['item_id'] = item_id
+                                        if int(user_id) != int(match_id):
+                                            item['color'] = 2
+                                        else:
+                                            item['color'] = 1
                                         bool = False
                                         break
                                 if bool:
+                                    numcolor = 1
+                                    if int(user_id) != int(match_id):
+                                        numcolor = 2
+                                    else:
+                                        numcolor = 1
                                     new_item = {
-                                        'item_id': user_id,
+                                        'user_id': int(user_id),
+                                        'item_id': item_id,
                                         'attack': mercenary.get('attack'),
                                         'position': match["positions"][user.get('index') - 1]['position'],
-                                        'user_id': user_id,
-                                        'index': user.get('index')
+                                        'index': user.get('index'),
+                                        'color': numcolor
                                     }
                                     match["items"].append(new_item)
+
                                 await self.send_response_to_members(member, match)
-                            break
-                    pass
-                break
-
-
-
-
-
-
-
-
-                await self.send_response_to_members(room['members'], match)
-                break
-        pass
+            break
     def random_1_to_6(self):
         return random.randint(1, 6)

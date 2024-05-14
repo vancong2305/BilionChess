@@ -16,7 +16,8 @@ class Body:
     position_x = 50
     position_y = 50
     player_one = None
-    player_two = None
+    player_one_state = None
+    player_two_state = None
     state = 'idle'
     screen = None
     def __init__(self, character_type):
@@ -25,8 +26,8 @@ class Body:
         self.images = self.load_images()
         self.animation_timer = pygame.time.get_ticks()
         # Tạo một đối tượng thanh máu
-        self.health_bar = HealthBar(100, 100, Para.SIZE / 2, 8, 100)
-        self.health_bar.decrease_health(20)
+        self.health_bar = HealthBar(100, 100, Para.SIZE / 2, 8, 2000)
+        # self.health_bar.decrease_health(20)
 
     def load_images(self):
         image_paths = []
@@ -105,7 +106,6 @@ class Body:
         if (self.action == "left"):
             images = []
             for path in image_paths:
-                print(os.path.dirname(__file__))
                 image_path = os.path.abspath(os.path.join(os.path.dirname(__file__), path))  # Sửa đường dẫn ở đây
                 image = pygame.image.load(image_path)
                 resized_image = pygame.transform.smoothscale(image, (Para.SIZE // 3, Para.SIZE // 2))
@@ -115,7 +115,6 @@ class Body:
         else:
             images = []
             for path in image_paths:
-                print(os.path.dirname(__file__))
                 image_path = os.path.abspath(os.path.join(os.path.dirname(__file__), path))  # Sửa đường dẫn ở đây
                 image = pygame.image.load(image_path)
                 resized_image = pygame.transform.smoothscale(image, (Para.SIZE // 3, Para.SIZE // 2))
@@ -136,7 +135,7 @@ class Body:
         if current_time - self.animation_timer > self.animation_interval:
             self.current_image_index = (self.current_image_index + 1) % len(self.images)
             self.animation_timer = current_time
-    def move(self, screen, target_x, target_y, duration):
+    def move_two(self, screen, target_x, target_y, duration):
         start_time = time.time()
         elapsed_time = 0
         start_x = self.position_x  # Vị trí ban đầu của x
@@ -156,7 +155,6 @@ class Body:
 
             p_x = Map.map_corner[1][0]
             p_y = Map.map_corner[1][1]
-            print(p_x, p_y)
             if (self.position_x >= 60 and self.position_x < p_x and p_y-80 <= self.position_y <= p_y + 80):
                 Body.player_two.update("left")
             else:
@@ -164,16 +162,44 @@ class Body:
                 Body.player_two.update("run")
             Body.player_one.draw(screen)
             Body.player_two.draw(screen)
-
             # Draw character at the new position
             self.draw(screen)
+            pygame.display.flip()
+    def move_one(self, screen, target_x, target_y, duration):
+        start_time = time.time()
+        elapsed_time = 0
+        start_x = self.position_x  # Vị trí ban đầu của x
+        start_y = self.position_y  # Vị trí ban đầu của y
+        while elapsed_time < duration:
+            current_time = time.time()
+            elapsed_time = current_time - start_time
+            progress = elapsed_time / duration
+            # Calculate new position
+            self.position_x = int(start_x + (target_x - start_x) * progress)
+            self.position_y = int(start_y + (target_y - start_y) * progress)
 
+            # Clear the screen
+            screen.fill((115, 115, 115))
+            self.handle_events()
+            Store.map.draw(screen)  # Vẽ lại nền background
+
+            p_x = Map.map_corner[1][0]
+            p_y = Map.map_corner[1][1]
+            if (self.position_x >= 60 and self.position_x < p_x and p_y-80 <= self.position_y <= p_y + 80):
+                Body.player_one.update("left")
+            else:
+                Body.player_two.update("idle")
+                Body.player_one.update("run")
+            Body.player_two.draw(screen)
+            Body.player_one.draw(screen)
+            # Draw character at the new position
+            self.draw(screen)
             pygame.display.flip()
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == QUIT:
                 exit(0)
-    def moveList(character, screen, positions, duration):
+    def moveList(character, screen, positions, duration, number_char):
         # positions = Map.map_positions
         new_position = []
         if len(positions) > 4:
@@ -188,18 +214,22 @@ class Body:
                     # Limit to 2 intermediate points (modify limit as needed)
                     if len(new_position) == 4:
                         break
-            print(Map.map_corner)
-            print(new_position)
             new_position.append(positions[-1])
             for i, position in enumerate(new_position):
                 if i == 0:  # Skip the first position (starting point)
                     continue
                 # Move to the current position
-                character.move(screen, position[0], position[1], duration)
+                if number_char == 1:
+                    character.move_one(screen, position[0], position[1], duration)
+                else:
+                    character.move_two(screen, position[0], position[1], duration)
             character.update("idle")
         else:
             for position in positions:
-                character.move(screen, position[0], position[1], duration)
+                if number_char == 1:
+                    character.move_one(screen, position[0], position[1], duration)
+                else:
+                    character.move_two(screen, position[0], position[1], duration)
             character.update("idle")
             # Dừng trong một khoảng thời gian trước khi di chuyển đến vị trí tiếp theo
 
