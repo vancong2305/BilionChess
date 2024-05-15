@@ -10,6 +10,7 @@ import pygame
 from pygame.locals import *
 
 from src.client.WebSocketClient import WebSocketClient
+from src.client.gui.end.EndScreen import Endscreen
 from src.client.gui.parameter.Connect import Connect
 from src.client.gui.parameter.Para import Para
 from src.client.gui.play.dice.Dice import Dice
@@ -126,6 +127,14 @@ class Game:
                         x = item["position"]["x"]
                         y = item["position"]["y"]
                         Item(4).draw(self.screen, x + 20, y + 10, item.get('user_id'), item.get('color'))
+            if self.match['winner'] != 0:
+                if self.match['winner'] == int(Connect.ID):
+                    pygame.quit()
+                    Endscreen(self.match.get('reason_win')).run()
+                else:
+                    pygame.quit()
+                    Endscreen(self.match.get('reason_lose')).run()
+                break
             pygame.display.flip()
             await asyncio.sleep(1/32)
             self.clock.tick(32)

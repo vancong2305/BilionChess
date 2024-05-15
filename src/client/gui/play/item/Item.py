@@ -216,7 +216,7 @@ class Item:
             self.position_y = 222
             label_name = "Hiệp sĩ"
             label_price = "2000 VND"
-            label_description = "+Tấn công: 500 +Mô tả: Hiệp sĩ luôn trung thành. Mua năm hiệp sĩ sẽ thắng!!!"
+            label_description = "+Tấn công: 500 +Mô tả: Hiệp sĩ luôn trung thành. Anh ta không thể mua chuộc!!!"
 
         current_image = self.images[self.current_image_index]
 
@@ -245,16 +245,16 @@ class Item:
         label_price_x = image_center_x - label_price_width / 2
         label_price_y = image_center_y - label_price_height / 2 - 33
         label_description_x = image_center_x - label_description_width / 2
-        label_description_y = self.position_y + 60
+        label_description_y = self.position_y + 80
 
         button_color = (255, 200, 0)  # Light orange color for the button
         button_text_color = (0, 0, 0)  # Black color for the button text
         button_font = pygame.font.Font(None, 18)  # Choose a suitable font for the button text
         border_radius = 9  # Adjust the border radius as needed
-        button_width = 50  # Button width
-        button_height = 20  # Button height
-        button_position_x = self.position_x - button_width // 4  # Adjust position as needed
-        button_position_y = self.position_y + button_height * 2.5  # Adjust position as needed
+        button_width = 75  # Button width
+        button_height = 30  # Button height
+        button_position_x = image_center_x - button_width // 2 # Adjust position as needed
+        button_position_y = self.position_y + button_height * 1.85 # Adjust position as needed
 
         pygame.draw.rect(screen, button_color, (button_position_x, button_position_y, button_width, button_height),
                          border_radius=border_radius)

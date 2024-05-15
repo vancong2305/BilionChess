@@ -29,7 +29,7 @@ class Match:
                 "name": "Hiệp sĩ",
                 "price": 2000,
                 "attack" : 500,
-                "description": "Hiệp sĩ luôn trung thành. Mua năm hiệp sĩ sẽ thắng!!!"
+                "description": "Hiệp sĩ luôn trung thành. Anh ta không thể mua chuộc!!!"
             }
         ]
         Match.match = {
@@ -41,10 +41,13 @@ class Match:
             "roll": 0,
             "dice": 1,
             "request_item_id": 0,
+            "winner": 0,
+            "reason_win": "",
+            "reason_lose": "",
             "users": [
                 {
                     "user_id": 1,
-                    "hp": 2000,
+                    "hp": 200,
                     "gold": 0,
                     "position": {
                         "x": 40,
@@ -54,7 +57,7 @@ class Match:
                 },
                 {
                     "user_id": 2,
-                    "hp": 2200,
+                    "hp": 200,
                     "gold": 0,
                     "position": {
                         "x": 40,

@@ -43,7 +43,8 @@ class WelcomeScreen:
     async def create_room(self):
         # pygame.quit()
         await RoomRequest().create()
-        await WaitRoomMaster(WelcomeScreen.player_name, "Unknown").run()
+        await WaitRoomMaster(WelcomeScreen.player_name, "Unknow").run()
+        await self.run()
 
     def play_with_ai(self):
         pygame.quit()

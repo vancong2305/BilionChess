@@ -8,6 +8,7 @@ import pygame
 
 from src.client.WebSocketClient import WebSocketClient
 from src.client.gui.play.Game import Game
+from src.client.handle.RoomRequest import RoomRequest
 
 
 def start_game():
@@ -29,14 +30,15 @@ class WaitRoomMember:
         self.button_width, self.button_height = 200, 50
         self.button_spacing = 20
         self.button_x = (self.screen_width - self.button_width) // 2
-
+        self.running = True
+        self.runningTask = True
         self.buttons = [
             Button(self.button_x, 300 + (self.button_height + self.button_spacing) * 2, self.button_width,
-                   self.button_height, "Rời phòng", start_game)
+                   self.button_height, "Rời phòng", self.leave_room)
         ]
-        self.running = True
 
-    def handle_events(self):
+
+    async def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()  # Đảm bảo Pygame được giải phóng trước khi kết thúc
@@ -46,7 +48,10 @@ class WaitRoomMember:
                     pygame.quit()  # Đảm bảo Pygame được giải phóng trước khi kết thúc
                     exit(0)
             for button in self.buttons:
-                button.handle_event(event)
+                await button.handle_event(event)
+    async def leave_room(self):
+        print("Rời khỏi phòng")
+        await RoomRequest().leave(self.room_name)
 
     def draw(self):
         self.screen.fill((232, 232, 232))
@@ -85,14 +90,19 @@ class WaitRoomMember:
         self.screen.blit(resized_image, (x, y))
 
     async def receive_message(self):
-        while True:
-            message = await WebSocketClient.client.recv()
-            # Đưa tin nhắn vào hàng đợi
-            WebSocketClient.message_queue.put(message)
+        try:
+            while self.runningTask:
+                message = await WebSocketClient.client.recv()
+                # Đưa tin nhắn vào hàng đợi
+                WebSocketClient.message_queue.put(message)
+                await asyncio.sleep(1 / 30)
+        except asyncio.CancelledError:
+            # Xử lý khi task bị hủy
+            print("Task bị hủy.")
 
     async def run(self):
         # Tạo một event loop mới
-        asyncio.create_task(self.receive_message())
+        self.task = asyncio.create_task(self.receive_message())  # Tạo task
 
         while self.running:
             # Kiểm tra xem có tin nhắn mới từ server không
@@ -100,6 +110,24 @@ class WaitRoomMember:
                 message = WebSocketClient.message_queue.get()
                 # Xử lý tin nhắn từ server
                 parsed_data = json.loads(message)
+                print(parsed_data)
+                if parsed_data.get('status_leave'):
+                    print("have")
+                    self.runningTask = False
+                    try:
+                        self.task.cancel()
+                        await self.task
+                    except asyncio.CancelledError:
+                        pass
+                    self.running = False
+                    break
+                if parsed_data.get('status_delete'):
+                    print("have")
+                    self.runningTask = False
+                    self.task.cancel()
+                    await self.task
+                    self.running = False
+                    break
                 if parsed_data.get('match_id'):
                     self.running = False
                     await Game(parsed_data).start()
@@ -111,7 +139,7 @@ class WaitRoomMember:
                             self.player_name = user_name
                             print(user_name)
             await asyncio.sleep(1 / 60)
-            self.handle_events()
+            await self.handle_events()
             self.draw()
             self.clock.tick(60)
 
@@ -127,7 +155,8 @@ class Button:
         text_rect = text_surface.get_rect(center=self.rect.center)
         screen.blit(text_surface, text_rect)
 
-    def handle_event(self, event):
+    async def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):
-                self.action()
+                if self.action is not None:
+                    await self.action()

@@ -48,3 +48,16 @@ class RoomRequest:
         response_data = json.loads(response)
         print(response_data)
         # Xử lý phản hồi từ server theo nhu cầu của bạn
+    async def delete(self):
+        request = {
+            "object": "room",
+            "action": "delete"
+        }
+        await WebSocketClient.client.send(json.dumps(request))
+    async def leave(self, room_id):
+        request = {
+            "object": "room",
+            "action": "leave",
+            "room_id": room_id
+        }
+        await WebSocketClient.client.send(json.dumps(request))

@@ -142,7 +142,7 @@ class WaitingRoomList:
             button_text_rect = button_text.get_rect(center=self.btr.center)
             self.screen.blit(button_text, button_text_rect)
             pygame.display.flip()
-            self.clock.tick(60)
+            self.clock.tick(30)
 class Element:
     def __init__(self, title, content):
         self.font = pygame.font.Font(None, 36)

@@ -105,6 +105,7 @@ class MatchService:
                                 user['index'] = match['positions'][selected_positions[-1]-1]['index']
                                 match['dice'] = random_number
                                 match['roll'] = 1
+
                                 # Trừ máu nếu đi vào ô của đối thủ
                                 # Nếu item là 1 trừ máu luôn bất kể ai sở hữu nếu đi vào index đó
                                 if len(match['items'])>0:
@@ -120,9 +121,37 @@ class MatchService:
                                             user['hp'] = user.get('hp') - item.get('attack')
                                         if user['hp'] <= 0:
                                             user['hp'] = 0
+
+                                # Kiểm tra người chiến thắng
+                                # Kiểm tra hp
+                                if user['hp'] <= 0:
+                                    # Nếu lượt hiện tại của người thứ nhất thì người thứ 2 thắng và ngược lại
+                                    if user['user_id'] == t1:
+                                        match['winner'] = int(t2)
+                                        match['reason_win'] = "Bạn thắng! Thương trường đầy âm mưu biến cố. Dùng não, dùng tiền đều phải đúng chỗ. Đối thủ không còn đủ sức khoẻ để chèo trống trước những toan tính hiểm hóc của bạn!"
+                                        match['reason_lose'] = "Bạn thua vì không còn sức khoẻ để chống lại toan tính của đối thủ. Xin chia buồn, lần sau cố gắng nhé!"
+                                    else:
+                                        match['winner'] = int(t1)
+                                        match['reason_win'] = "Bạn thắng! Thương trường đầy âm mưu biến cố. Dùng não, dùng tiền đều phải đúng chỗ. Đối thủ không còn đủ sức khoẻ để chèo trống trước những toan tính hiểm hóc của bạn!"
+                                        match['reason_lose'] = "Bạn thua vì không còn sức khoẻ để chống lại toan tính của đối thủ. Xin chia buồn, lần sau cố gắng nhé!"
+                                # Kiểm tra số lượng tiền
+                                if user['gold'] >= 6000 and user['hp'] >= 0:
+                                    match['winner'] = user['user_id']
+                                    match['reason_win'] = "Bạn thắng! Phú khả địch quốc huống chi là đối thủ. Bạn là một thương gia giỏi, kiếm tiền khủng quá, đối thủ cũng phải chào thua!"
+                                    match['reason_lose'] = "Bạn thua vì không còn sức khoẻ để chống lại toan tính của đối thủ. Xin chia buồn, lần sau cố gắng nhé!"
                                 await self.send_response_to_members(member, match)
+                                # Xoá trận sau khi thắng
+                                # Giải phóng task cho trận này
+                                if match['winner'] != 0:
+                                    boolean_check = False
                                 break
+            for match in MatchService.matchs:
+                if match["match_id"] == t1 and boolean_check == 0:
+                    MatchService.matchs.remove(match)  # Xóa phần tử
             if boolchk:
+                for match in MatchService.matchs:
+                    if match["match_id"] == t1 and boolean_check == 0:
+                        MatchService.matchs.remove(match)  # Xóa phần tử
                 boolean_check = False
             if remaining_time == 0:
                 if turn == t1:

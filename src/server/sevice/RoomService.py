@@ -26,6 +26,9 @@ class RoomService:
         elif action == 'get_by_room_id':
             room_id = request.get('room_id')
             await self.get_rooms_by_room_id(room_id)
+        elif action == 'leave':
+            room_id = request.get('room_id')
+            await self.leave_room(user_id, room_id)
         elif action == 'delete':
             await self.delete(user_id)
         else:
@@ -88,7 +91,7 @@ class RoomService:
         for member in members:
             user_id = member['user_id']
             for client in self.clients:
-                if client.remote_address[1] == user_id:
+                if client.remote_address[1].__str__() == user_id.__str__():
                     await client.send(json.dumps(response))
                     break  # Kết thúc vòng lặp sau khi gửi message
 
@@ -109,19 +112,30 @@ class RoomService:
         return False
 
     async def delete(self, room_id):
+        roomsss = RoomService.get_rooms_by_room_id(room_id)
         # Xóa phòng với chủ sở hữu là `room_id` khỏi danh sách `rooms`
         deleted_rooms = [room for room in self.rooms if room['room_id'] == room_id]
         RoomService.rooms = [room for room in self.rooms if room['room_id'] != room_id]
-
         if deleted_rooms:
-            response = {'status': 'success', 'message': f'Rooms deleted for room_id {room_id}',
-                        'deleted_rooms': deleted_rooms}
+            response = {'status_delete': 1}
         else:
-            response = {'status': 'error', 'message': f'No rooms found for room_id {room_id}'}
-
-        await self.client.send(json.dumps(response))
+            response = {'status_delete': 1}
+        await self.send_response_to_members(roomsss['members'], response)
 
     async def hard_delete(self, room_id):
         # Xóa phòng với chủ sở hữu là `room_id` khỏi danh sách `rooms`
         deleted_rooms = [room for room in self.rooms if room['room_id'] == room_id]
         RoomService.rooms = [room for room in self.rooms if room['room_id'] != room_id]
+
+    async def leave_room(self, user_id, room_id):
+        roomsss = RoomService.get_rooms_by_room_id(room_id)
+        for room in RoomService.rooms:
+            if room['room_id'].__str__() == room_id.__str__():
+                for member in room['members']:
+                    if member['user_id'].__str__() == user_id.__str__():
+                        room['members'].remove(member)  # Xóa người dùng khỏi danh sách
+                        response = {'status_leave': 1}
+                        await self.client.send(json.dumps(response))
+                        await self.send_response_to_members(roomsss['members'], response)
+                        break
+        pass
