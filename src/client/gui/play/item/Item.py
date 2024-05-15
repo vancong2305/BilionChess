@@ -32,7 +32,7 @@ class Item:
         root_path = RootProgram().get_root_path()
         self.font_path = os.path.join(root_path, "resource", "font", "Arial.ttf")
         self.font = pygame.font.Font(self.font_path, 18)
-
+        self.button_color = (255, 200, 0)  # Light orange color for the button
     def load_images(self):
         image_paths = []
         if self.character_type == 2:
@@ -247,7 +247,7 @@ class Item:
         label_description_x = image_center_x - label_description_width / 2
         label_description_y = self.position_y + 80
 
-        button_color = (255, 200, 0)  # Light orange color for the button
+
         button_text_color = (0, 0, 0)  # Black color for the button text
         button_font = pygame.font.Font(None, 18)  # Choose a suitable font for the button text
         border_radius = 9  # Adjust the border radius as needed
@@ -256,7 +256,7 @@ class Item:
         button_position_x = image_center_x - button_width // 2 # Adjust position as needed
         button_position_y = self.position_y + button_height * 1.85 # Adjust position as needed
 
-        pygame.draw.rect(screen, button_color, (button_position_x, button_position_y, button_width, button_height),
+        pygame.draw.rect(screen, self.button_color, (button_position_x, button_position_y, button_width, button_height),
                          border_radius=border_radius)
 
         button_text = button_font.render("Mua", True, button_text_color)

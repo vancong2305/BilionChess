@@ -146,17 +146,29 @@ class Game:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
                 if self.item1.button_buy_rect.collidepoint(mouse_pos):
+                    self.item1.button_color = (205 , 133, 63)
+                    self.item1.drawDefault(self.screen)
                     print("Vào đây nè 1" + str(self.match['match_id']))
                     await MatchRequest().update_match(1, int(self.match['match_id']))
+                    self.item1.button_color = (255, 200, 0)
                 if self.item2.button_buy_rect.collidepoint(mouse_pos):
+                    self.item2.button_color = (205, 133, 63)
+                    self.item2.drawDefault(self.screen)
                     print("Vào đây nè 2")
                     await MatchRequest().update_match(2, int(self.match['match_id']))
+                    self.item2.button_color = (255, 200, 0)
                 if self.item3.button_buy_rect.collidepoint(mouse_pos):
+                    self.item3.button_color = (205, 133, 63)
+                    self.item3.drawDefault(self.screen)
                     print("Vào đây nè 3")
                     await MatchRequest().update_match(3, int(self.match['match_id']))
+                    self.item3.button_color = (255, 200, 0)
                 if self.item4.button_buy_rect.collidepoint(mouse_pos):
+                    self.item4.button_color = (205, 133, 63)
+                    self.item4.drawDefault(self.screen)
                     print("Vào đây nè 4")
                     await MatchRequest().update_match(4, int(self.match['match_id']))
+                    self.item4.button_color = (255, 200, 0)
     def update(self):
         self.character_one.update("idle")
         self.character_two.update("idle")
