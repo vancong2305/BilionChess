@@ -21,7 +21,6 @@ At Pycharm: <br>
 Step 1: Git > Clone > Coppy Paste and Clone with url "https://github.com/vancong2305/merchant-chess.git" <br>
 Step 2: Setting > Add your Interpreter, im use python 3.9 to develope on Window use python 3.10 to test on Linux <br>
 Step 3: When choose Add package "requests", "opencv-python", "websockets", "pygame" <br>
-Step 4: <br> 
-        Run File WebSocketServer to listenning client, <br>
-        Run Main.py to init client 1, <br>
-        Run MainTest.py to init client 2.
+Step 4: <br>&emsp;&emsp;&emsp;Run File WebSocketServer to listenning client <br>
+        &emsp;&emsp;&emsp;Run Main.py to init client 1 <br>
+        &emsp;&emsp;&emsp;Run MainTest.py to init client 2
