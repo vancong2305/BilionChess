@@ -24,3 +24,8 @@ Step 3: When choose Add package "requests", "opencv-python", "websockets", "pyga
 Step 4: <br>&emsp;&emsp;&emsp;Run File WebSocketServer to listenning client <br>
         &emsp;&emsp;&emsp;Run Main.py to init client 1 <br>
         &emsp;&emsp;&emsp;Run MainTest.py to init client 2
+
+# Some pictures about game
+
+
+
