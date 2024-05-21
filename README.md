@@ -36,9 +36,11 @@ This project is for research and educational purposes. All images used are colle
    - Run `MainTest.py` to initialize client 2.
 
 ## Screenshots
-![Screenshot 1](link-to-screenshot-1)
-![Screenshot 2](link-to-screenshot-2)
-![Screenshot 3](link-to-screenshot-3)
+![intuitive_screen](https://github.com/vancong2305/merchant-chess/assets/137736021/bff94337-eaad-4c03-9e7d-946fa9d491e3)
+![room_screen](https://github.com/vancong2305/merchant-chess/assets/137736021/2503441f-ceb8-4881-834d-76d552f6a8c3)
+![search_room_screen](https://github.com/vancong2305/merchant-chess/assets/137736021/953eee69-dc4b-4190-8292-33f25e40d56d)
+![game_screen](https://github.com/vancong2305/merchant-chess/assets/137736021/195bcc51-e9ff-48b5-9a11-1eac81ed08d9)
+
 
 ## Contributing
 Contributions are welcome. Please feel free to submit a Pull Request.
